@@ -30,18 +30,17 @@ app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 require('./../route/index.js')(app);
 // connect to database
-mongoose.connect('mongodb://localhost/react');
+mongoose.connect('mongodb://react:mongo4@localhost/reactOA');
 mongoose.connection
-    .on('open',function () {
-        process.env.connect_database = 1;
-        console.log('connection successful');
+  .on('open', function () {
+    process.env.connect_database = 1;
+    console.log('connection successful');
 
-    })
-    .on('error',function () {
-        process.env.connect_database = 0;
-      console.log('connection error');
-
-    });
+  })
+  .on('error', function (err) {
+    process.env.connect_database = 0;
+    console.log('connection error: ' + err)
+  });
 // Tools like Cloud9 rely on this.
 const DEFAULT_PORT = parseInt(process.env.PORT, 10) || 3000;
 const HOST = process.env.HOST || '0.0.0.0';
@@ -60,7 +59,7 @@ choosePort(HOST, DEFAULT_PORT)
       publicPath: config.output.publicPath
     });
     const hotMiddleware = require('webpack-hot-middleware')(compiler, {
-      log: () => {},
+      log: () => { },
       heartbeat: 2000
     });
     app.use(devMiddleware);
@@ -71,11 +70,11 @@ choosePort(HOST, DEFAULT_PORT)
     devMiddleware.waitUntilValid(() => {
       console.log('> Listening at ' + uri + '\n');
       // when env is testing, don't need open it
-      if ( process.env.NODE_ENV !== 'testing') {
+      if (process.env.NODE_ENV !== 'testing') {
         openBrowser(uri);
       }
     });
-  app.listen(port)
+    app.listen(port)
   })
   .catch(err => {
     if (err && err.message) {
